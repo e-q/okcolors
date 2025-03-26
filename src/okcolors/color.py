@@ -8,11 +8,11 @@ from typing import Literal
 from attrs import astuple, define, field, validators
 
 
-def float_repr(n):
+def float_repr(n: float) -> str:
     return f"{n:.3f}"
 
 
-def angle_repr(h):
+def angle_repr(h: float) -> str:
     return f"{h:.0f}°"
 
 
@@ -79,9 +79,9 @@ class OkLab:
     def to_srgb(self) -> sRGB:
         # Special case absolute white/black
         if self.L <= 0:
-            rgb = (0, 0, 0)
+            rgb = (0.0, 0.0, 0.0)
         elif self.L >= 1.0:
-            rgb = (1, 1, 1)
+            rgb = (1.0, 1.0, 1.0)
         else:
             rgb = oklab_to_srgb(*astuple(self))
         return sRGB(*rgb)
@@ -90,7 +90,7 @@ class OkLab:
         return self.to_srgb().to_hex()
 
 
-def wrap_degrees(a):
+def wrap_degrees(a: float) -> float:
     return a - 360 * math.floor(a / 360)
 
 
@@ -133,14 +133,14 @@ def linear_to_srgb(c: float) -> float:
     if c <= 0.0031308:
         return 12.92 * c
     else:
-        return 1.055 * c ** (1 / 2.4) - 0.055
+        return 1.055 * math.pow(c, (1.0 / 2.4)) - 0.055
 
 
 def srgb_to_linear(c: float) -> float:
     if c <= 0.04045:
         return c / 12.92
     else:
-        return ((c + 0.055) / 1.055) ** 2.4
+        return math.pow((c + 0.055) / 1.055, 2.4)
 
 
 def oklab_to_srgb(L: float, a: float, b: float) -> tuple[float, float, float]:
