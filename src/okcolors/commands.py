@@ -5,11 +5,11 @@ from typing import get_args
 
 import click
 from cattrs import unstructure
-from jinja2 import Environment, FileSystemLoader
 
 from okcolors.color import Variant
 from okcolors.palettes import OkColorPalette, get_color_palette
 from okcolors.schemes import OkColorscheme, get_colorscheme
+from okcolors.template import render
 
 # If we want to exclude a field from unstructuring, do this:
 # c = cattrs.Converter()
@@ -48,23 +48,6 @@ def export_colorscheme(
         out = unstructure(pal)
     pretty_out = json.dumps(out, indent=2)
     click.echo(pretty_out)
-
-
-def render(
-    template_path: Path | str, name: OkColorscheme = "smooth", kind: Variant = "dark"
-) -> str:
-    colorscheme = get_colorscheme(name=name, kind=kind)
-
-    parsed_path = Path(template_path)
-    if not parsed_path.is_file():
-        raise FileNotFoundError(f"No such file: '{template_path}'")
-    template_dir = parsed_path.parent
-    template_name = parsed_path.name
-    env = Environment(loader=FileSystemLoader(template_dir))
-    template = env.get_template(template_name)
-
-    rendered = template.render(colors=colorscheme.get_hex_colors())
-    return rendered
 
 
 @click.command()
