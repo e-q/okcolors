@@ -1,13 +1,14 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib import ticker
+from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.patches import Circle
 
 from okcolors.color import ColorPalette, OkLab, OkLCh
 
 
-def palplot(pal: ColorPalette, bg: str = "#FFFFFF"):
+def palplot(pal: ColorPalette, bg: str = "#FFFFFF") -> tuple[Figure, Axes]:
     hex_d = {}
     for cname, c in pal.colors.items():
         match c:
@@ -17,7 +18,7 @@ def palplot(pal: ColorPalette, bg: str = "#FFFFFF"):
                 hex_d[cname] = c.to_hex()
 
     n = len(hex_d)
-    _, ax = plt.subplots(
+    fig, ax = plt.subplots(
         figsize=(n / 2, 1.2), layout="constrained", subplot_kw={"aspect": "equal"}
     )
     ax.set_facecolor(bg)
@@ -31,6 +32,7 @@ def palplot(pal: ColorPalette, bg: str = "#FFFFFF"):
     ax.set_ylim(-0.5, 0.5)
     ax.xaxis.set_major_locator(ticker.NullLocator())
     ax.yaxis.set_major_locator(ticker.NullLocator())
+    return fig, ax
 
 
 FOREGROUND_ROLES = [
@@ -46,7 +48,7 @@ FOREGROUND_ROLES = [
 N_COLORS = len(FOREGROUND_ROLES)
 
 
-def schemeplot(colorscheme: ColorPalette) -> Figure:
+def schemeplot(colorscheme: ColorPalette) -> tuple[Figure, Axes]:
     if not all(c in colorscheme.colors for c in ["bg", "tx", *FOREGROUND_ROLES]):
         raise ValueError("Incomplete Colorscheme")
 
@@ -82,4 +84,4 @@ def schemeplot(colorscheme: ColorPalette) -> Figure:
     ax.set_ylim(-0.25, 0.25)
     ax.xaxis.set_major_locator(ticker.NullLocator())
     ax.yaxis.set_major_locator(ticker.NullLocator())
-    return fig
+    return fig, ax
