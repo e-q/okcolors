@@ -1,0 +1,40 @@
+[project]
+name = "okcolors"
+description = "An OK Colorscheme"
+license = { text = "MIT License" }
+readme = "README.md"
+authors = [
+	{ name = "Eric A. Quintero", email = "eric.antonio.quintero@gmail.com" },
+]
+requires-python = ">=3.12"
+dynamic = ["version"]
+dependencies = [
+	"attrs>=24.3.0",
+	"cattrs>=24.1.2",
+	"click>=8.1.8",
+	"jinja2>=3.1.4",
+	"numpy>=2.2.3",
+]
+
+[project.scripts]
+export-palette = "okcolors.commands:export_palette"
+export-colorscheme = "okcolors.commands:export_colorscheme"
+render-template = "okcolors.commands:render_template"
+render-swatch = "okcolors.commands:render_colorscheme_swatch"
+
+[project.optional-dependencies]
+tests = ["hypothesis>=6.129.2", "pytest>=8.3.5"]
+viz = ["matplotlib>=3.10.1"]
+
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[dependency-groups]
+dev = ["notebook>=7.3.1", "ruff>=0.11.0"]
+
+[tool.ruff.format]
+skip-magic-trailing-comma = true
+[tool.ruff.lint]
+extend-select = ["I", "RUF"]
+isort = { split-on-trailing-comma = false }
