@@ -21,19 +21,19 @@ def get_roles(
             }
             if high_contrast:
                 base_tones = {
-                    "bg": base_palette.colors["base_05"],
-                    "surface": base_palette.colors["base_20"],
-                    "overlay": base_palette.colors["base_30"],
-                    "hilite_lo": base_palette.colors["base_25"],
-                    "hilite_mid": base_palette.colors["base_35"],
-                    "hilite_hi": base_palette.colors["base_45"],
-                    "muted": base_palette.colors["base_75"],
-                    "subtle": base_palette.colors["base_85"],
-                    "tx": base_palette.colors["base_99"],
-                    "black": base_palette.colors["base_10"],
-                    "dark_grey": base_palette.colors["base_20"],
-                    "lite_grey": base_palette.colors["base_90"],
-                    "white": base_palette.colors["base_99"],
+                    "bg": base_palette.colors["base_00"],
+                    "surface": base_palette.colors["base_15"],
+                    "overlay": base_palette.colors["base_25"],
+                    "hilite_lo": base_palette.colors["base_20"],
+                    "hilite_mid": base_palette.colors["base_30"],
+                    "hilite_hi": base_palette.colors["base_40"],
+                    "muted": base_palette.colors["base_70"],
+                    "subtle": base_palette.colors["base_80"],
+                    "tx": base_palette.colors["base_90"],
+                    "black": base_palette.colors["base_25"],
+                    "dark_grey": base_palette.colors["base_35"],
+                    "lite_grey": base_palette.colors["base_80"],
+                    "white": base_palette.colors["base_90"],
                 }
             else:
                 base_tones = {
@@ -64,19 +64,19 @@ def get_roles(
             }
             if high_contrast:
                 base_tones = {
-                    "bg": base_palette.colors["base_99"],
+                    "bg": base_palette.colors["base_100"],
                     "surface": base_palette.colors["base_95"],
                     "overlay": base_palette.colors["base_85"],
                     "hilite_lo": base_palette.colors["base_90"],
                     "hilite_mid": base_palette.colors["base_80"],
                     "hilite_hi": base_palette.colors["base_70"],
-                    "muted": base_palette.colors["base_45"],
-                    "subtle": base_palette.colors["base_35"],
-                    "tx": base_palette.colors["base_05"],
-                    "black": base_palette.colors["base_05"],
-                    "dark_grey": base_palette.colors["base_15"],
-                    "lite_grey": base_palette.colors["base_85"],
-                    "white": base_palette.colors["base_95"],
+                    "muted": base_palette.colors["base_30"],
+                    "subtle": base_palette.colors["base_20"],
+                    "tx": base_palette.colors["base_10"],
+                    "black": base_palette.colors["base_25"],
+                    "dark_grey": base_palette.colors["base_35"],
+                    "lite_grey": base_palette.colors["base_80"],
+                    "white": base_palette.colors["base_90"],
                 }
             else:
                 base_tones = {
@@ -89,10 +89,10 @@ def get_roles(
                     "muted": base_palette.colors["base_55"],
                     "subtle": base_palette.colors["base_45"],
                     "tx": base_palette.colors["base_30"],
-                    "black": base_palette.colors["base_30"],
-                    "dark_grey": base_palette.colors["base_40"],
-                    "lite_grey": base_palette.colors["base_85"],
-                    "white": base_palette.colors["base_95"],
+                    "black": base_palette.colors["base_25"],
+                    "dark_grey": base_palette.colors["base_35"],
+                    "lite_grey": base_palette.colors["base_80"],
+                    "white": base_palette.colors["base_90"],
                 }
     name = color_palette.name.split()[0] + " " + kind.title()
     pal = ColorPalette(colors=base_tones | accent_colors, name=name)
