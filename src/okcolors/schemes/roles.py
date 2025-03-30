@@ -22,11 +22,11 @@ def get_roles(
             if high_contrast:
                 base_tones = {
                     "bg": base_palette.colors["base_00"],
-                    "surface": base_palette.colors["base_15"],
-                    "overlay": base_palette.colors["base_25"],
-                    "hilite_lo": base_palette.colors["base_20"],
-                    "hilite_mid": base_palette.colors["base_30"],
-                    "hilite_hi": base_palette.colors["base_40"],
+                    "surface": base_palette.colors["base_25"],
+                    "overlay": base_palette.colors["base_35"],
+                    "hilite_lo": base_palette.colors["base_30"],
+                    "hilite_mid": base_palette.colors["base_40"],
+                    "hilite_hi": base_palette.colors["base_50"],
                     "muted": base_palette.colors["base_70"],
                     "subtle": base_palette.colors["base_80"],
                     "tx": base_palette.colors["base_90"],
