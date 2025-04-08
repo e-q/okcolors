@@ -38,3 +38,4 @@ just compile sharp   # Generates data/okcolors-sharp.json
 - [Draft WCAG 3 Color Contrast Checker](https://cliambrown.com/contrast/)
 - [Okhsv & Okhsl Color Pickers](https://bottosson.github.io/misc/colorpicker)
 - [OKLCH Color Picker & Converter](https://oklch.com)
+- [Huetone Palette Tool](https://huetone.ardov.me/)
