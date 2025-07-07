@@ -1,7 +1,7 @@
 test:
 	uv run ruff format
 	uv run ruff check --fix
-	uv run pyright src
+	uv run ty check
 	uv run pytest
 
 clean:

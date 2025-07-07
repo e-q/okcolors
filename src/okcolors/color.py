@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 from typing import Literal
 
-from attrs import astuple, define, field, validators
+from attrs import define, field, validators
 
 
 def float_repr(n: float) -> str:
@@ -56,7 +56,7 @@ class sRGB:
         return f"#{r_int:02x}{g_int:02x}{b_int:02x}"
 
     def to_oklab(self) -> OkLab:
-        Lab = srgb_to_oklab(*astuple(self))
+        Lab = srgb_to_oklab(self.r, self.g, self.b)
         return OkLab(*Lab)
 
     def to_oklch(self) -> OkLCh:
@@ -83,7 +83,7 @@ class OkLab:
         elif self.L >= 1.0:
             rgb = (1.0, 1.0, 1.0)
         else:
-            rgb = oklab_to_srgb(*astuple(self))
+            rgb = oklab_to_srgb(self.L, self.a, self.b)
         return sRGB(*rgb)
 
     def to_hex(self) -> str:

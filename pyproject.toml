@@ -31,10 +31,15 @@ requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [dependency-groups]
-dev = ["notebook>=7.3.1", "ruff>=0.11.0"]
+dev = [
+    "notebook>=7.3.1",
+    "ruff>=0.11.0",
+    "ty>=0.0.15",
+]
 
 [tool.ruff.format]
 skip-magic-trailing-comma = true
 [tool.ruff.lint]
-extend-select = ["I", "RUF"]
+select = ["E", "F", "B", "C4", "SIM", "I", "UP", "PIE", "PGH", "RUF"]
+ignore = ["E501"]
 isort = { split-on-trailing-comma = false }
