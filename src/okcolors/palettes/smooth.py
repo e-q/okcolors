@@ -11,24 +11,24 @@ def get_colors() -> ColorPalette:
 
     palette = ColorPalette(
         name="OkColors-Smooth Accent Colors",
-        colors=dict(
-            magenta_dark=OkLCh(L_dark, 0.2, 342),
-            red_dark=OkLCh(L_dark, 0.2, 18),
-            orange_dark=OkLCh(L_dark, C_base, 54),
-            yellow_dark=OkLCh(L_dark, C_base, 90),
-            green_dark=OkLCh(L_dark, C_base, 150),
-            cyan_dark=OkLCh(L_dark, C_base, 210),
-            blue_dark=OkLCh(L_dark, C_base, 270),
-            purple_dark=OkLCh(L_dark, C_base, 306),
-            magenta_light=OkLCh(L_light, 0.17, 342),
-            red_light=OkLCh(L_light, 0.125, 18),
-            orange_light=OkLCh(L_light, C_base, 54),
-            yellow_light=OkLCh(L_light, C_base, 90),
-            green_light=OkLCh(L_light, C_base, 150),
-            cyan_light=OkLCh(L_light, C_base, 210),
-            blue_light=OkLCh(L_light, C_base, 270),
-            purple_light=OkLCh(L_light, C_base, 306),
-        ),
+        colors={
+            "magenta_dark": OkLCh(L_dark, 0.2, 342),
+            "red_dark": OkLCh(L_dark, 0.2, 18),
+            "orange_dark": OkLCh(L_dark, C_base, 54),
+            "yellow_dark": OkLCh(L_dark, C_base, 90),
+            "green_dark": OkLCh(L_dark, C_base, 150),
+            "cyan_dark": OkLCh(L_dark, C_base, 210),
+            "blue_dark": OkLCh(L_dark, C_base, 270),
+            "purple_dark": OkLCh(L_dark, C_base, 306),
+            "magenta_light": OkLCh(L_light, 0.17, 342),
+            "red_light": OkLCh(L_light, 0.125, 18),
+            "orange_light": OkLCh(L_light, C_base, 54),
+            "yellow_light": OkLCh(L_light, C_base, 90),
+            "green_light": OkLCh(L_light, C_base, 150),
+            "cyan_light": OkLCh(L_light, C_base, 210),
+            "blue_light": OkLCh(L_light, C_base, 270),
+            "purple_light": OkLCh(L_light, C_base, 306),
+        },
     )
 
     return palette
