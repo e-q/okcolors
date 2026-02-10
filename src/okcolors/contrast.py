@@ -8,7 +8,7 @@ Reference: https://github.com/Myndex/SAPC-APCA
 
 from __future__ import annotations
 
-from okcolors.color import Color, sRGB, srgb_to_linear
+from okcolors.color import Color, OkLCh, srgb_to_linear
 
 # sRGB to Y (luminance) coefficients
 _Y_R = 0.2126729
@@ -80,3 +80,46 @@ def apca_contrast(fg_color: Color, bg_color: Color) -> float:
         if sapc > -_LOW_CLIP:
             return 0.0
         return (sapc + _ROFF) * 100.0
+
+
+def adjust_foreground_for_contrast(
+    fg_color: Color, bg_color: Color, target_lc: float, *, tol: float = 0.1
+) -> OkLCh:
+    """
+    Return a new foreground color that achieves *target_lc* APCA contrast
+    against *bg_color*, derived from *fg_color* by adjusting only its OkLCh
+    lightness (preserving hue and chroma as much as gamut allows).
+
+    Uses bisection on OkLCh L. The result is an OkLCh color within *tol* Lc
+    of the target. Raises ValueError if the target is unreachable at any L.
+    """
+    fg_lch = fg_color.to_oklch()
+    C, h = fg_lch.C, fg_lch.h
+
+    # apca_contrast is monotonically decreasing in fg lightness:
+    #   L=0 gives maximum positive Lc, L=1 gives maximum negative Lc.
+    lc_at_zero = apca_contrast(OkLCh(0.0, C, h), bg_color)
+    lc_at_one = apca_contrast(OkLCh(1.0, C, h), bg_color)
+
+    # Check reachability
+    lc_lo = min(lc_at_zero, lc_at_one)
+    lc_hi = max(lc_at_zero, lc_at_one)
+    if target_lc > lc_hi + tol or target_lc < lc_lo - tol:
+        raise ValueError(
+            f"Target Lc {target_lc} is unreachable; achievable range is "
+            f"[{lc_lo:.1f}, {lc_hi:.1f}] for this fg/bg combination."
+        )
+
+    lo, hi = 0.0, 1.0
+    for _ in range(64):
+        mid = (lo + hi) / 2
+        lc = apca_contrast(OkLCh(mid, C, h), bg_color)
+        if abs(lc - target_lc) < tol:
+            return OkLCh(mid, C, h)
+        # Monotonically decreasing: if lc is too high, increase L
+        if lc > target_lc:
+            lo = mid
+        else:
+            hi = mid
+
+    return OkLCh((lo + hi) / 2, C, h)

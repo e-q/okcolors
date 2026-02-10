@@ -1,7 +1,8 @@
+import pytest
 from pytest import approx
 
 from okcolors.color import OkLCh, sRGB
-from okcolors.contrast import apca_contrast
+from okcolors.contrast import adjust_foreground_for_contrast, apca_contrast
 
 
 def _hex(h: str) -> sRGB:
@@ -60,3 +61,40 @@ def test_low_contrast_clipped_to_zero():
     a = _hex("#808080")
     b = _hex("#818181")
     assert apca_contrast(a, b) == 0.0
+
+
+# --- adjust_foreground_for_contrast ---
+
+
+def test_adjust_hits_target_on_light_bg():
+    """Adjust achromatic fg to Lc 75 on white bg."""
+    gray = _hex("#888888")
+    white = _hex("#ffffff")
+    result = adjust_foreground_for_contrast(gray, white, 75.0)
+    assert apca_contrast(result, white) == approx(75.0, abs=0.1)
+
+
+def test_adjust_hits_target_on_dark_bg():
+    """Adjust achromatic fg to Lc -75 on black bg."""
+    gray = _hex("#888888")
+    black = _hex("#000000")
+    result = adjust_foreground_for_contrast(gray, black, -75.0)
+    assert apca_contrast(result, black) == approx(-75.0, abs=0.1)
+
+
+def test_adjust_preserves_hue_and_chroma():
+    """Only lightness should change; hue and chroma are preserved."""
+    red = OkLCh(0.5, 0.15, 30.0)
+    white = _hex("#ffffff")
+    result = adjust_foreground_for_contrast(red, white, 60.0)
+    assert result.C == red.C
+    assert result.h == red.h
+    assert result.L != red.L
+
+
+def test_adjust_unreachable_raises():
+    """Requesting an impossible Lc target should raise ValueError."""
+    gray = _hex("#888888")
+    white = _hex("#ffffff")
+    with pytest.raises(ValueError, match="unreachable"):
+        adjust_foreground_for_contrast(gray, white, -120.0)
