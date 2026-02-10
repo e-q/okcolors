@@ -5,17 +5,13 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.patches import Circle
 
-from okcolors.color import ColorPalette, OkLab, OkLCh
+from okcolors.color import ColorPalette
 
 
 def palplot(pal: ColorPalette, bg: str = "#FFFFFF") -> tuple[Figure, Axes]:
     hex_d = {}
     for cname, c in pal.colors.items():
-        match c:
-            case OkLCh() | OkLab():
-                hex_d[cname] = c.to_srgb().to_hex()
-            case _:
-                hex_d[cname] = c.to_hex()
+        hex_d[cname] = c.to_hex()
 
     n = len(hex_d)
     fig, ax = plt.subplots(
@@ -53,12 +49,8 @@ def schemeplot(colorscheme: ColorPalette) -> tuple[Figure, Axes]:
         raise ValueError("Incomplete Colorscheme")
 
     hex_d = {}
-    for cname in colorscheme.colors:
-        match c := colorscheme.colors[cname]:
-            case OkLCh() | OkLab():
-                hex_d[cname] = c.to_srgb().to_hex()
-            case _:
-                hex_d[cname] = c.to_hex()
+    for cname, c in colorscheme.colors.items():
+        hex_d[cname] = c.to_hex()
 
     with mpl.rc_context(
         {

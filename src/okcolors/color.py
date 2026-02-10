@@ -55,6 +55,9 @@ class sRGB:
         b_int = round(self.b * 255)
         return f"#{r_int:02x}{g_int:02x}{b_int:02x}"
 
+    def to_srgb(self) -> sRGB:
+        return self
+
     def to_oklab(self) -> OkLab:
         Lab = srgb_to_oklab(self.r, self.g, self.b)
         return OkLab(*Lab)
@@ -70,6 +73,9 @@ class OkLab:
     )
     a: float = field(repr=float_repr)
     b: float = field(repr=float_repr)
+
+    def to_oklab(self) -> OkLab:
+        return self
 
     def to_oklch(self) -> OkLCh:
         C = math.sqrt(self.a**2 + self.b**2)
@@ -101,6 +107,9 @@ class OkLCh:
     )
     C: float = field(repr=float_repr, validator=validators.ge(0.0))
     h: float = field(repr=angle_repr, converter=wrap_degrees)
+
+    def to_oklch(self) -> OkLCh:
+        return self
 
     def to_oklab(self) -> OkLab:
         h_rad = self.h / 180 * math.pi
