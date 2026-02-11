@@ -82,6 +82,22 @@ def apca_contrast(fg_color: Color, bg_color: Color) -> float:
         return (sapc + _ROFF) * 100.0
 
 
+def wcag_contrast(fg_color: Color, bg_color: Color) -> float:
+    """Compute the WCAG 2.2 contrast ratio between two colors.
+
+    Returns a value in [1, 21].
+    """
+    fg_srgb = fg_color.to_srgb()
+    bg_srgb = bg_color.to_srgb()
+
+    y_fg = _srgb_to_y(fg_srgb.r, fg_srgb.g, fg_srgb.b)
+    y_bg = _srgb_to_y(bg_srgb.r, bg_srgb.g, bg_srgb.b)
+
+    lighter = max(y_fg, y_bg)
+    darker = min(y_fg, y_bg)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
 def adjust_foreground_for_contrast(
     fg_color: Color, bg_color: Color, target_lc: float, *, tol: float = 0.1
 ) -> OkLCh:
