@@ -1,7 +1,58 @@
-from okcolors.color import ColorPalette, Variant
+from okcolors.color import ColorDict, ColorPalette, Variant
+from okcolors.tones import (
+    TintFn,
+    ansi_lightnesses,
+    background_lightnesses,
+    text_lightnesses,
+)
+
+_ACCENT_NAMES = (
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "cyan",
+    "blue",
+    "purple",
+    "magenta",
+)
+
+
+def _accent_colors(color_palette: ColorPalette, dark: bool) -> ColorDict:
+    suffix = "_light" if dark else "_dark"
+    return {name: color_palette.colors[f"{name}{suffix}"] for name in _ACCENT_NAMES}
 
 
 def get_roles(
+    color_palette: ColorPalette,
+    base_tinter: TintFn,
+    kind: Variant,
+    bg_L: float,
+    bg_step: float,
+    tx_lc: float = 100,
+    subtle_lc: float = 85,
+    muted_lc: float = 70,
+    surface_L: float | None = None,
+) -> ColorPalette:
+    dark = kind == "dark"
+
+    bg_ls = background_lightnesses(bg_L, bg_step, dark, surface_L=surface_L)
+    tx_ls = text_lightnesses(bg_L, tx_lc, subtle_lc, muted_lc, dark)
+    ansi_ls = ansi_lightnesses()
+
+    all_ls = bg_ls | tx_ls | ansi_ls
+    base_tones: ColorDict = {role: base_tinter(L) for role, L in all_ls.items()}
+
+    name = color_palette.name.split()[0] + " " + kind.title()
+    return ColorPalette(
+        colors=base_tones | _accent_colors(color_palette, dark), name=name
+    )
+
+
+# --- Legacy path (smooth, sharp, v1) — remove when fully migrated to APCA --- #
+
+
+def get_roles_legacy(
     color_palette: ColorPalette,
     base_palette: ColorPalette,
     kind: Variant,
@@ -9,16 +60,6 @@ def get_roles(
 ) -> ColorPalette:
     match kind:
         case "dark":
-            accent_colors = {
-                "red": color_palette.colors["red_light"],
-                "orange": color_palette.colors["orange_light"],
-                "yellow": color_palette.colors["yellow_light"],
-                "green": color_palette.colors["green_light"],
-                "cyan": color_palette.colors["cyan_light"],
-                "blue": color_palette.colors["blue_light"],
-                "purple": color_palette.colors["purple_light"],
-                "magenta": color_palette.colors["magenta_light"],
-            }
             if high_contrast:
                 base_tones = {
                     "bg": base_palette.colors["base_00"],
@@ -52,16 +93,6 @@ def get_roles(
                     "white": base_palette.colors["base_90"],
                 }
         case "light":
-            accent_colors = {
-                "red": color_palette.colors["red_dark"],
-                "orange": color_palette.colors["orange_dark"],
-                "yellow": color_palette.colors["yellow_dark"],
-                "green": color_palette.colors["green_dark"],
-                "cyan": color_palette.colors["cyan_dark"],
-                "blue": color_palette.colors["blue_dark"],
-                "purple": color_palette.colors["purple_dark"],
-                "magenta": color_palette.colors["magenta_dark"],
-            }
             if high_contrast:
                 base_tones = {
                     "bg": base_palette.colors["base_100"],
@@ -94,6 +125,8 @@ def get_roles(
                     "lite_grey": base_palette.colors["base_80"],
                     "white": base_palette.colors["base_90"],
                 }
+    dark = kind == "dark"
     name = color_palette.name.split()[0] + " " + kind.title()
-    pal = ColorPalette(colors=base_tones | accent_colors, name=name)
-    return pal
+    return ColorPalette(
+        colors=base_tones | _accent_colors(color_palette, dark), name=name
+    )
