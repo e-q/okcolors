@@ -91,3 +91,20 @@ def render_colorscheme_swatch(colorscheme: OkColorscheme, variant: Variant) -> N
     outname = f"{cs.name.replace(' ', '_')}.png"
     fig.savefig(outname, dpi=200, bbox_inches="tight")
     print(f"Wrote {outname}", file=sys.stderr)
+
+
+@click.command()
+@click.argument("colorscheme", type=click.Choice(scheme_names), default="smooth")
+@click.option("-v", "--variant", type=click.Choice(variant_names), default="dark")
+def render_contrast_grid(colorscheme: OkColorscheme, variant: Variant) -> None:
+    try:
+        from okcolors.viz import contrast_grid
+    except ImportError as e:
+        raise RuntimeError(
+            "Visualization extras not present. Install `okcolors[viz]`"
+        ) from e
+    cs = get_colorscheme(name=colorscheme, kind=variant)
+    fig, _ = contrast_grid(cs)
+    outname = f"{cs.name.replace(' ', '_')}_contrast_grid.png"
+    fig.savefig(outname, dpi=200, bbox_inches="tight")
+    print(f"Wrote {outname}", file=sys.stderr)
