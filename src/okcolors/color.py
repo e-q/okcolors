@@ -152,8 +152,7 @@ def srgb_to_linear(c: float) -> float:
         return math.pow((c + 0.055) / 1.055, 2.4)
 
 
-def oklab_to_srgb(L: float, a: float, b: float) -> tuple[float, float, float]:
-    # Convert from OkLab to linear RGB
+def oklab_to_linear_rgb(L: float, a: float, b: float) -> tuple[float, float, float]:
     long_rt = L + 0.3963377774 * a + 0.2158037573 * b
     med_rt = L - 0.1055613458 * a - 0.0638541728 * b
     short_rt = L - 0.0894841775 * a - 1.2914855480 * b
@@ -162,10 +161,35 @@ def oklab_to_srgb(L: float, a: float, b: float) -> tuple[float, float, float]:
     med = med_rt**3
     short = short_rt**3
 
-    # Convert to linear RGB
     r_linear = +4.0767416621 * long - 3.3077115913 * med + 0.2309699292 * short
     g_linear = -1.2684380046 * long + 2.6097574011 * med - 0.3413193965 * short
     b_linear = -0.0041960863 * long - 0.7034186147 * med + 1.7076147010 * short
+
+    return (r_linear, g_linear, b_linear)
+
+
+def is_in_srgb_gamut(L: float, a: float, b: float, *, tol: float = 1e-6) -> bool:
+    r, g, b_ = oklab_to_linear_rgb(L, a, b)
+    return all(-tol <= c <= 1 + tol for c in (r, g, b_))
+
+
+def max_chroma(L: float, h: float, *, tol: float = 0.001) -> float:
+    """Binary search for the largest C where OkLCh(L, C, h) is in sRGB gamut."""
+    lo, hi = 0.0, 0.5
+    h_rad = h / 180 * math.pi
+    for _ in range(64):
+        mid = (lo + hi) / 2
+        a = mid * math.cos(h_rad)
+        b = mid * math.sin(h_rad)
+        if is_in_srgb_gamut(L, a, b):
+            lo = mid
+        else:
+            hi = mid
+    return lo
+
+
+def oklab_to_srgb(L: float, a: float, b: float) -> tuple[float, float, float]:
+    r_linear, g_linear, b_linear = oklab_to_linear_rgb(L, a, b)
 
     # Apply gamma correction to get sRGB
     r_srgb = linear_to_srgb(r_linear)

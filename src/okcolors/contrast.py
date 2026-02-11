@@ -8,7 +8,7 @@ Reference: https://github.com/Myndex/SAPC-APCA
 
 from __future__ import annotations
 
-from okcolors.color import Color, OkLCh, srgb_to_linear
+from okcolors.color import Color, OkLCh, max_chroma, srgb_to_linear
 
 # sRGB to Y (luminance) coefficients
 _Y_R = 0.2126729
@@ -123,3 +123,35 @@ def adjust_foreground_for_contrast(
             hi = mid
 
     return OkLCh((lo + hi) / 2, C, h)
+
+
+def adjust_for_contrast_max_chroma(
+    h: float,
+    bg: Color,
+    target_lc: float,
+    *,
+    max_C: float | None = None,
+    max_iter: int = 10,
+    tol: float = 0.1,
+) -> OkLCh:
+    """Find the OkLCh color at hue *h* that hits *target_lc* APCA contrast
+    against *bg* while maximizing chroma within the sRGB gamut.
+
+    If *max_C* is given, chroma is capped at that value.
+
+    Alternates between adjusting L for contrast and maximizing C at that L.
+    """
+    C = min(max_chroma(0.5, h), 0.3)
+    if max_C is not None:
+        C = min(C, max_C)
+    L = 0.5
+    for _ in range(max_iter):
+        result = adjust_foreground_for_contrast(OkLCh(L, C, h), bg, target_lc, tol=tol)
+        L = result.L
+        C_new = max_chroma(L, h)
+        if max_C is not None:
+            C_new = min(C_new, max_C)
+        if abs(C_new - C) < 0.001:
+            break
+        C = C_new
+    return OkLCh(L, C, h)

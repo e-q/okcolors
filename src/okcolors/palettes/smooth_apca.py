@@ -5,7 +5,7 @@ but computes OkLCh lightness via bisection to hit a specific APCA Lc value
 against the provided background colors.
 """
 
-from okcolors.color import Color, ColorPalette, OkLCh
+from okcolors.color import Color, ColorDict, ColorPalette, OkLCh
 from okcolors.contrast import adjust_foreground_for_contrast
 
 # Hue angles and chromas carried over from the smooth palette.
@@ -37,7 +37,7 @@ def get_colors(
     absolute value than dark-on-light (positive Lc) to look equally readable.
     ``target_lc`` is applied with the correct sign for each polarity.
     """
-    colors: dict[str, OkLCh] = {}
+    colors: ColorDict = {}
 
     for name, C, h in _ACCENTS:
         seed = OkLCh(0.5, C, h)
