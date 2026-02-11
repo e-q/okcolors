@@ -20,6 +20,7 @@ dependencies = [
 export-palette = "okcolors.commands:export_palette"
 export-colorscheme = "okcolors.commands:export_colorscheme"
 render-template = "okcolors.commands:render_template"
+export-csv = "okcolors.commands:export_colorscheme_csv"
 render-swatch = "okcolors.commands:render_colorscheme_swatch"
 
 [project.optional-dependencies]
