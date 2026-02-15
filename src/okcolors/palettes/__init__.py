@@ -27,9 +27,6 @@ def get_color_palette(name: OkColorPalette) -> ColorPalette:
 
 
 def get_base_palette(mono: bool = False) -> ColorPalette:
-    if mono:
-        palette = base_mono.get_colors()
-    else:
-        palette = base.get_colors()
+    palette = base_mono.get_colors() if mono else base.get_colors()
 
     return palette

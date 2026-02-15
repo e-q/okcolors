@@ -67,8 +67,10 @@ def render_template(
 def render_colorscheme_swatch(colorscheme: OkColorscheme, variant: Variant) -> None:
     try:
         from okcolors.viz import schemeplot
-    except ImportError:
-        raise RuntimeError("Visualization extras not present. Install `okcolors[viz]`")
+    except ImportError as e:
+        raise RuntimeError(
+            "Visualization extras not present. Install `okcolors[viz]`"
+        ) from e
     cs = get_colorscheme(name=colorscheme, kind=variant)
     fig, _ = schemeplot(cs)
     outname = f"{cs.name.replace(' ', '_')}.png"
