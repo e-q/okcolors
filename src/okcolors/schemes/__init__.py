@@ -8,7 +8,7 @@ from okcolors.schemes.roles import get_roles
 __all__ = ["OkColorscheme", "colorscheme_report", "get_colorscheme"]
 
 
-OkColorscheme = Literal["sharp", "smooth", "v1"]
+OkColorscheme = Literal["sharp", "sharp-apca", "smooth", "smooth-apca", "v1"]
 
 
 def get_colorscheme(
@@ -18,7 +18,7 @@ def get_colorscheme(
         raise ValueError(
             f"Unknown colorscheme name, must be one of {get_args(OkColorscheme)}"
         )
-    high_contrast = name == "sharp"
+    high_contrast = name in ("sharp", "sharp-apca")
     variant_colors = get_color_palette(name)
     base_palette = get_base_palette(mono=high_contrast)
     colorscheme = get_roles(
