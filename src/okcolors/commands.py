@@ -1,3 +1,5 @@
+import csv
+import io
 import json
 import sys
 from pathlib import Path
@@ -8,7 +10,7 @@ from cattrs import unstructure
 
 from okcolors.color import Variant
 from okcolors.palettes import OkColorPalette, get_color_palette
-from okcolors.schemes import OkColorscheme, get_colorscheme
+from okcolors.schemes import OkColorscheme, colorscheme_report, get_colorscheme
 from okcolors.template import render
 
 # If we want to exclude a field from unstructuring, do this:
@@ -59,6 +61,19 @@ def render_template(
 ) -> None:
     out = render(template_file, name=colorscheme, kind=variant)
     click.echo(out)
+
+
+@click.command()
+@click.argument("colorscheme", type=click.Choice(scheme_names), default="smooth")
+@click.option("-v", "--variant", type=click.Choice(variant_names), default="dark")
+def export_colorscheme_csv(colorscheme: OkColorscheme, variant: Variant) -> None:
+    scheme = get_colorscheme(name=colorscheme, kind=variant)
+    rows = colorscheme_report(scheme)
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=list(rows[0].keys()))
+    writer.writeheader()
+    writer.writerows(rows)
+    click.echo(buf.getvalue(), nl=False)
 
 
 @click.command()
