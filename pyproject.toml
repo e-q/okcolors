@@ -22,6 +22,7 @@ export-colorscheme = "okcolors.commands:export_colorscheme"
 render-template = "okcolors.commands:render_template"
 export-csv = "okcolors.commands:export_colorscheme_csv"
 render-swatch = "okcolors.commands:render_colorscheme_swatch"
+render-contrast-grid = "okcolors.commands:render_contrast_grid"
 
 [project.optional-dependencies]
 tests = ["hypothesis>=6.129.2", "pytest>=8.3.5"]
