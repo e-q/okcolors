@@ -2,20 +2,18 @@ from typing import Literal, TypedDict, get_args
 
 from okcolors.color import Color, ColorPalette, Variant
 from okcolors.contrast import apca_contrast, wcag_contrast
-from okcolors.palettes import OkColorPalette, get_color_palette, get_tinter
+from okcolors.palettes import OkColorPalette, get_tinter
 from okcolors.schemes.roles import get_roles
 
 __all__ = ["OkColorscheme", "colorscheme_report", "get_colorscheme"]
 
 
-OkColorscheme = Literal["sharp", "sharp-apca", "smooth", "smooth-apca"]
+OkColorscheme = Literal["sharp", "smooth"]
 
 # Per-variant background parameters: (bg_L, bg_step)
 _APCA_PARAMS: dict[str, dict[str, tuple[float, float]]] = {
     "smooth": {"dark": (0.20, 0.05), "light": (0.99, 0.025)},
-    "smooth-apca": {"dark": (0.20, 0.05), "light": (0.99, 0.025)},
     "sharp": {"dark": (0.00, 0.05), "light": (1.00, 0.025)},
-    "sharp-apca": {"dark": (0.00, 0.05), "light": (1.00, 0.025)},
 }
 
 
@@ -26,25 +24,18 @@ def get_colorscheme(
         raise ValueError(
             f"Unknown colorscheme name, must be one of {get_args(OkColorscheme)}"
         )
-    high_contrast = name in ("sharp", "sharp-apca")
+    high_contrast = name == "sharp"
     tinter = get_tinter(mono=high_contrast)
     bg_L, bg_step = _APCA_PARAMS[name][kind]
 
-    if name == "smooth-apca":
-        from okcolors.palettes import smooth_apca
+    if name == "smooth":
+        from okcolors.palettes import smooth
 
-        variant_colors = smooth_apca.get_colors(
-            bg_dark=tinter(0.20), bg_light=tinter(0.99)
-        )
-    elif name == "sharp-apca":
-        from okcolors.palettes import sharp_apca
+        variant_colors = smooth.get_colors(bg_dark=tinter(0.20), bg_light=tinter(0.99))
+    else:  # sharp
+        from okcolors.palettes import sharp
 
-        variant_colors = sharp_apca.get_colors(
-            bg_dark=tinter(0.00), bg_light=tinter(1.00)
-        )
-    else:
-        # smooth or sharp: static accent palette, APCA-parametric roles
-        variant_colors = get_color_palette(name)
+        variant_colors = sharp.get_colors(bg_dark=tinter(0.00), bg_light=tinter(1.00))
 
     # Sharp dark starts at true black; boost surface to L=0.20
     # so the ladder sits above the range where screens can't show
