@@ -2,14 +2,14 @@ from typing import Literal, get_args
 
 from okcolors.color import ColorPalette
 
-from . import base, base_mono, sharp, sharp_apca, smooth, smooth_apca, v1
+from . import base, base_mono, sharp, sharp_apca, smooth, smooth_apca
 from .base import tone_at as _tinted_tone_at
 from .base_mono import tone_at as _mono_tone_at
 
 __all__ = ["OkColorPalette", "get_base_tones", "get_color_palette", "get_tinter"]
 
 
-OkColorPalette = Literal["sharp", "sharp-apca", "smooth", "smooth-apca", "v1"]
+OkColorPalette = Literal["sharp", "sharp-apca", "smooth", "smooth-apca"]
 
 
 def get_color_palette(name: OkColorPalette) -> ColorPalette:
@@ -28,8 +28,6 @@ def get_color_palette(name: OkColorPalette) -> ColorPalette:
             palette = sharp_apca.get_colors(
                 bg_dark=bp.colors["base_00"], bg_light=bp.colors["base_100"]
             )
-        case "v1":
-            palette = v1.get_colors()
         case _:
             raise ValueError(
                 f"Unknown palette name, must be one of {get_args(OkColorPalette)}"
